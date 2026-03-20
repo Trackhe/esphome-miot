@@ -1,6 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import uart
+from esphome.components import uart, ota
 from esphome.const import CONF_ID
 
 DEPENDENCIES = ["uart"]
@@ -30,6 +30,7 @@ def validate_heartbeat(config):
     return config
 
 CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2026, 1, 0),
     cv.Schema(
         {
             cv.GenerateID(): cv.declare_id(Miot),
@@ -57,4 +58,4 @@ async def to_code(config):
     cg.add(var.set_poll_interval(config[CONF_MIOT_POLL_INTERVAL]))
     cg.add(var.set_ota_net_indicator(config[CONF_MIOT_OTA_NET_INDICATOR]))
 
-    cg.add_define("USE_OTA_STATE_CALLBACK")
+    ota.request_ota_state_listeners()
